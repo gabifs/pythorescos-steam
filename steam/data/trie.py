@@ -1,16 +1,17 @@
 from typing import Tuple
-
+import json
 
 class TrieNode(object):
     
-    def __init__(self, char: str):
+    def __init__(self, char: str, id):
         self.char = char
+        self.id = id
         self.children = []
         self.word_finished = False
         self.counter = 1
     
 
-def add(root, word: str):
+def add(root, word: str, id):
   """Adicionando uma palavra da Trie"""
   node = root
   for char in word:
@@ -27,14 +28,15 @@ def add(root, word: str):
               break
       # Se não achamos o caractere de 'word' temos que adicioná-lo
       if not found_in_child:
-          new_node = TrieNode(char)
+          new_node = TrieNode(char,id)
           node.children.append(new_node)
           node = new_node
+
   # Quando terminarmos a palavra, marcamos o seu final
   node.word_finished = True
 
 
-def find_prefix(root, prefix: str) -> Tuple[bool, int]:
+def find_prefix(root, prefix: str) -> Tuple[bool, int, int]:
     """
     1. Checa se o prefixo existe em alguma das palavras
     2. Se sim, retorna quantas palavras tem o mesmo prefixo
@@ -57,20 +59,25 @@ def find_prefix(root, prefix: str) -> Tuple[bool, int]:
             return False, 0
     # Se chegamos aqui, então encontramos o prefixo. O retorno indica 
     # se que o encontramos e quantas palavras tem esse prefixo
-    return True, node.counter
+    return True, node.counter, int(node.id)
 
-root = TrieNode('*')
-arq = open("arquivo.txt")
+root = TrieNode('*',None)
+arq = open("arquivo.json").readlines()
+arq = arq[1:-1]
 
-for line in arq.readlines():
-  line = line.lower().strip().replace(" ","")
-  add(root, line)
+for i,entry in enumerate(arq):
+    # O último objeto do arquivo.json não tem vírgula no final da linha
+    if i != len(arq)-1:
+        entry = entry[0:-2]
 
-add(root, "hackathon")
-add(root, 'hack')
+    obj = json.loads(entry)
+    # Formatando o nome para inserí-lo na TRIE
+    name = obj["name"].lower().strip().replace(" ","")
+    add(root, name, obj["id"])
 
+# Procurando pelos prefixos
 print(find_prefix(root, 'God'))
-print(find_prefix(root, 'god'))
+print(find_prefix(root, 'godofwar20'))
 print(find_prefix(root, 'resi'))
 print(find_prefix(root, 'Resi'))
 print(find_prefix(root, 'gr'))
