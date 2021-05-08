@@ -36,7 +36,7 @@ def add(root, word: str, id):
   node.word_finished = True
 
 
-def find_prefix(root, prefix: str) -> Tuple[bool, int, int]:
+def find_prefix(root, prefix: str): #-> Tuple[bool, int, int]:
     """
     1. Checa se o prefixo existe em alguma das palavras
     2. Se sim, retorna quantas palavras tem o mesmo prefixo
@@ -44,7 +44,7 @@ def find_prefix(root, prefix: str) -> Tuple[bool, int, int]:
     node = root
     # Se a raiz não tiver filhos, retorna falso
     if not root.children:
-        return False, 0
+        return False, 0, None
     for char in prefix:
         char_not_found = True
         # Procura em todos os filhos do nodo atual
@@ -56,10 +56,27 @@ def find_prefix(root, prefix: str) -> Tuple[bool, int, int]:
                 break
     
         if char_not_found:
-            return False, 0
-    # Se chegamos aqui, então encontramos o prefixo. O retorno indica 
-    # se que o encontramos e quantas palavras tem esse prefixo
-    return True, node.counter, int(node.id)
+            return False, 0, None
+
+    # Se o prefixo corresponde a somente uma palavra, retornamos somente um id
+    # Senão, vamos procurar por todos os ids que estão relacioandos ao prefixo
+    if node.word_finished:
+        return [int(node.id)]
+    else:    
+        ids_found = []
+        return find_ids(node, ids_found)
+
+def find_ids(node: TrieNode, ids_found):
+    for node in node.children:
+        if node.word_finished:
+            ids_found.append(int(node.id))
+        else:
+            find_ids(node, ids_found)
+
+    return ids_found
+
+def standardize_string(str):
+    return str.lower().strip().replace(" ","")
 
 root = TrieNode('*',None)
 arq = open("arquivo.json").readlines()
@@ -72,12 +89,13 @@ for i,entry in enumerate(arq):
 
     obj = json.loads(entry)
     # Formatando o nome para inserí-lo na TRIE
-    name = obj["name"].lower().strip().replace(" ","")
+    name = standardize_string(obj["name"])
     add(root, name, obj["id"])
 
+# TODO retornar lista com todas as palavras com prefixos correspondentes, não somente o primeiro resultado
 # Procurando pelos prefixos
-print(find_prefix(root, 'God'))
-print(find_prefix(root, 'godofwar20'))
-print(find_prefix(root, 'resi'))
-print(find_prefix(root, 'Resi'))
-print(find_prefix(root, 'gr'))
+print(find_prefix(root, standardize_string('God')))
+print(find_prefix(root, standardize_string('godofwar20')))
+print(find_prefix(root, standardize_string('resi')))
+print(find_prefix(root, standardize_string('Resi')))
+print(find_prefix(root, standardize_string('Gran Turismo')))
