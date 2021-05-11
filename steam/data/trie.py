@@ -8,14 +8,14 @@ class TrieNode():
         Param: TrieNode(char, id)
             char:char - letra que está contida no nodo
             id:int - id da palavra que será inserida (ao longo de vários nodos)
-    """    
+    """
     def __init__(self, char: str, id):
         self.char = char
         self.id = id
         self.children = []
         self.word_finished = False
         self.counter = 1
-    
+
 class Trie(object):
 
     def __init__(self):
@@ -29,7 +29,7 @@ class Trie(object):
 
     def add(self, word: str, id):
         """
-            Método de Trie: adiciona uma palavra na TRIE. 
+            Método de Trie: adiciona uma palavra na TRIE.
 
             Param: add(word, id)
                 word:str - palavra que será inserida
@@ -42,7 +42,7 @@ class Trie(object):
             # Procura pelo caractere nos filhos do nodo atual
             for child in node.children:
                 if child.char == char:
-                    # Encontramos o caractere, incrementamos o contador pois 
+                    # Encontramos o caractere, incrementamos o contador pois
                     # agora temos mais uma palavra que tem o mesmo prefixo
                     child.counter += 1
                     # E vamos para o nodo filho onde econtramos o caractere de 'word'
@@ -60,7 +60,7 @@ class Trie(object):
 
     def find_prefix(self, prefix: str):
         """
-            Método de Trie: checa se o prefixo existe em alguma das palavras. 
+            Método de Trie: checa se o prefixo existe em alguma das palavras.
             Se sim, retorna quantas palavras tem o mesmo prefixo.
 
             Param: find_prefix(prefix)
@@ -80,7 +80,7 @@ class Trie(object):
                     char_not_found = False
                     node = child
                     break
-        
+
             if char_not_found:
                 return [None]
 
@@ -88,7 +88,7 @@ class Trie(object):
         # Senão, vamos procurar por todos os ids que estão relacioandos ao prefixo
         if node.word_finished:
             return [int(node.id)]
-        else:    
+        else:
             ids_found = []
             return self._find_ids(node, ids_found)
 
@@ -97,7 +97,7 @@ class Trie(object):
             Método de Trie: encontra todos os ids relacionados a um prefixo
 
             Param: _find_ids(node, ids_found)
-                node:TrieNode - nodo do qual iremos buscar todos os ids abaixo, 
+                node:TrieNode - nodo do qual iremos buscar todos os ids abaixo,
                 é o último caractere do prefixo
                 ids_found:array[int] - array com todos os ids encontrados a partir de node
         """
@@ -123,7 +123,7 @@ class Trie(object):
             Método de Trie: adiciona à vários registros retirados de um arquivo
 
             Param: add_from_file(filename):
-                filename:str - string que contém o nome do arquivo. 
+                filename:str - string que contém o nome do arquivo.
                 O arquivo deve ser um JSON no seguinte formato
                 [
                     <objeto_1>,
@@ -148,14 +148,15 @@ class Trie(object):
 
 # TODO retornar lista com todas as palavras com prefixos correspondentes, não somente o primeiro resultado
 
-trie = Trie()
-trie.add_from_file('arquivo.json')
-trie.add('GTA',20)
+if __name__ == "__main__":
+    trie = Trie()
+    trie.add_from_file('arquivo.json')
+    trie.add('GTA',20)
 
-# Procurando pelos prefixos
-print(trie.find_prefix('gt'))
-print(trie.find_prefix('God'))
-print(trie.find_prefix('godofwar20'))
-print(trie.find_prefix('resi'))
-print(trie.find_prefix('Resi'))
-print(trie.find_prefix('Gran Turismo'))
+    # Procurando pelos prefixos
+    print(trie.find_prefix('gt'))
+    print(trie.find_prefix('God'))
+    print(trie.find_prefix('godofwar20'))
+    print(trie.find_prefix('resi'))
+    print(trie.find_prefix('Resi'))
+    print(trie.find_prefix('Gran Turismo'))
