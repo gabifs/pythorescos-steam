@@ -69,7 +69,7 @@ def print_inverted_index(dicionario):
 if __name__ == "__main__":
   games = InvertedIndex()
   # Adicione o arquivo
-  games = games.initialize_inverted_index('final_data_new.json','name')
+  # games = games.initialize_inverted_index('final_data_new.json','name')
 
   print_inverted_index(games)
 
@@ -78,7 +78,7 @@ if __name__ == "__main__":
   # for game, id in games.items():
   #   string = game + " " + str(id) + "\n"
   #   file.write(string)
-  # file.close()
+  # file.close()q
 
 
   # Atulizando o arquivo
