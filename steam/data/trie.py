@@ -27,7 +27,7 @@ class Trie(object):
         """
         return TrieNode('*',None)
 
-    def add(self, word: str, id):
+    def __setitem__(self, word: str, id):
         """
             Método de Trie: adiciona uma palavra na TRIE.
 
@@ -58,7 +58,7 @@ class Trie(object):
         # Quando terminarmos a palavra, marcamos o seu final
         node.word_finished = True
 
-    def find_prefix(self, prefix: str):
+    def __getitem__(self, prefix: str):
         """
             Método de Trie: checa se o prefixo existe em alguma das palavras.
             Se sim, retorna quantas palavras tem o mesmo prefixo.
@@ -144,19 +144,22 @@ class Trie(object):
             # Formatando o nome para inserí-lo na TRIE
             name = self._standardize_string(obj["name"])
             id = int(obj["id"])
-            self.add(name, id)
+            self[name] = id
 
 # TODO retornar lista com todas as palavras com prefixos correspondentes, não somente o primeiro resultado
 
 if __name__ == "__main__":
     trie = Trie()
     trie.add_from_file('arquivo.json')
-    trie.add('GTA',20)
+    trie['GTA'] =20
 
     # Procurando pelos prefixos
-    print(trie.find_prefix('gt'))
-    print(trie.find_prefix('God'))
-    print(trie.find_prefix('godofwar20'))
-    print(trie.find_prefix('resi'))
-    print(trie.find_prefix('Resi'))
-    print(trie.find_prefix('Gran Turismo'))
+    print(trie['gt'])
+    print(trie['God'])
+    print(trie['godofwar20'])
+    print(trie['resi'])
+    print(trie['Resi'])
+    print(trie['Gran Turismo'])
+
+    for n in range(80000):
+        trie[str(n)] = n
