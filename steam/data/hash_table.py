@@ -1,5 +1,5 @@
 class HashTable:
-    def __init__(self, size=1000):
+    def __init__(self, size=1):
         self._size = size
         self._ocupados = 0
         self._dicionario = [-1] * size
@@ -10,7 +10,7 @@ class HashTable:
         string = str(obj)
         result = 0
         for position, letter in enumerate(string):
-            result += position+1 * ord(letter)
+            result += (position + 1) * ord(letter)
         return result % self._size
 
     def __setitem__(self, chave, dado):
@@ -24,10 +24,10 @@ class HashTable:
             self._verify_ocupation_max()
             return posicao
         else:                                         # se estiver ocupado, tenta achar lugar usando linear probing
-            first_pass = True
-            while posicao != posicao_inicial or first_pass:
-                first_pass = False
-                posicao += 1
+            # first_pass = True
+            posicao = (posicao + 1) % self._size
+            while posicao != posicao_inicial:# or first_pass:
+                # first_pass = False
                 if self._dicionario[posicao] == -1:
                     self._dicionario[posicao] = chave
                     self._conteudo[posicao] = dado
@@ -35,6 +35,8 @@ class HashTable:
                     self._ocupados += 1
                     self._verify_ocupation_max()
                     return posicao
+
+                posicao = (posicao + 1) % self._size
 
         if posicao == posicao_inicial:                  # se posicao igual à inicial é porque fez a volta e não achou
             return -1                                  # informa que deu problema (está cheio)
@@ -99,7 +101,6 @@ class HashTable:
         self._dicionario = nova_tabela._dicionario.copy()
         self._conteudo   = nova_tabela._conteudo.copy()
         self._used       = nova_tabela._used.copy()
-
         return -1
 
     def _verify_ocupation_max(self):
@@ -112,11 +113,17 @@ class HashTable:
         if ocupation <= 1/4:
             self._resize(int(self._size / 2))
 
+    def __print__(self):
+      for key, value in self._dicionario.items():
+        print(key, value)
 
 if __name__ == "__main__":
     table = HashTable()
 
-    for n in range(80000):
+    palavras = ['um', 'dois', 'tres', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove']
+
+    for n in palavras:
         table[n]=n
 
-
+    table.print()
+    print(len(table))
