@@ -1,6 +1,7 @@
 class HashTable:
-    def __init__(self, size):
+    def __init__(self, size=1000):
         self._size = size
+        self._ocupados = 0
         self._dicionario = [-1] * size
         self._conteudo   = [None] * size
         self._used       = [False] * size
@@ -8,8 +9,8 @@ class HashTable:
     def _hash(self, obj):
         string = str(obj)
         result = 0
-        for letter, position in zip(string, range(1, len(string)+1)):
-            result += position * ord(letter)
+        for position, letter in enumerate(string):
+            result += position+1 * ord(letter)
         return result % self._size
 
     def __setitem__(self, chave, dado):
@@ -19,6 +20,8 @@ class HashTable:
             self._dicionario[posicao] = chave          # coloca a chave
             self._conteudo[posicao] = dado                      # associa dado
             self._used[posicao] = True
+            self._ocupados += 1
+            self._verify_ocupation_max()
             return posicao
         else:                                         # se estiver ocupado, tenta achar lugar usando linear probing
             first_pass = True
@@ -29,6 +32,8 @@ class HashTable:
                     self._dicionario[posicao] = chave
                     self._conteudo[posicao] = dado
                     self._used[posicao] = True
+                    self._ocupados += 1
+                    self._verify_ocupation_max()
                     return posicao
 
         if posicao == posicao_inicial:                  # se posicao igual à inicial é porque fez a volta e não achou
@@ -51,7 +56,7 @@ class HashTable:
             return None # se chegou aqui é porque não existe a chave
 
     def __len__(self):
-        return self._size
+        return self._ocupados
 
     def pop(self, chave):
         posicao_inicial = posicao = self._hash(chave)
@@ -65,6 +70,8 @@ class HashTable:
         if self._dicionario[posicao] == chave:
             self._dicionario[posicao] = -1
             self._conteudo[posicao] = None
+            self._ocupados -= 1
+            self._verify_ocupation_min()
             return posicao
         else:
             return None # se chegou aqui é porque não existe a chave
@@ -80,9 +87,36 @@ class HashTable:
         for indice in range(0, self._size):
             print(f"({indice:03d})[{self._dicionario[indice]}] = {str(self._conteudo[indice]):15s} ({self._used[indice]})")
 
-if __name__ == "__main__":
-    table = HashTable(23)
-    table[[2,3]] = 8
-    table["foo"] = "bar"
+    # modifica tamanho da tabela criando nova tabela
+    def _resize(self, novo_tamanho):
+        nova_tabela = HashTable(novo_tamanho)
 
-    print(table.values())
+        for chave, valor in zip(self._dicionario, self._conteudo):
+            if valor != None:
+                nova_tabela[chave] = valor
+
+        self._size       = nova_tabela._size
+        self._dicionario = nova_tabela._dicionario.copy()
+        self._conteudo   = nova_tabela._conteudo.copy()
+        self._used       = nova_tabela._used.copy()
+
+        return -1
+
+    def _verify_ocupation_max(self):
+        ocupation = self._ocupados / self._size
+        if ocupation >= 3/4:
+            self._resize(int(self._size * 2))
+
+    def _verify_ocupation_min(self):
+        ocupation = self._ocupados / self._size
+        if ocupation <= 1/4:
+            self._resize(int(self._size / 2))
+
+
+if __name__ == "__main__":
+    table = HashTable()
+
+    for n in range(80000):
+        table[n]=n
+
+
