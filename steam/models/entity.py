@@ -1,4 +1,4 @@
-from data.trie import Trie
+from steam.data.trie import Trie
 
 class Entity:
     def __init__(self):

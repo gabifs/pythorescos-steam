@@ -1,5 +1,5 @@
-from models.game import Game
-from models.entity import Entity
+from steam.models.game import Game
+from steam.models.entity import Entity
 
 
 if __name__ == "__main__":

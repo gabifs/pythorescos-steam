@@ -1,4 +1,4 @@
-from models.entity import Entity
+from steam.models.entity import Entity
 
 class Game(Entity):
     def __init__(self):
@@ -21,9 +21,15 @@ class Game(Entity):
 
     def find_by_name(self, name):
         splited_name = name.strip().split()
-        games_set = set()
+        id_set = set()
         for word in splited_name:
-            games_set.union(self._names_table[word])
+            word = word.lower()
+            id_set = id_set.union(self._names_table[word])
 
-        return list(games_set)
+        games_list=[]
+        for game_id in id_set:
+            games_list.append(self.get(game_id))
+        return games_list
+
+
 
