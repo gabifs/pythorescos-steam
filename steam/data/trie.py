@@ -5,16 +5,15 @@ class TrieNode():
     """
         Classe: Formato do nodo que faz parte da TRIE
 
-        Param: TrieNode(char, id)
+        Param: TrieNode(char, value)
             char:char - letra que está contida no nodo
-            id:int - id da palavra que será inserida (ao longo de vários nodos)
+            value:any - value qualquer valor a ser inserido na trie
     """
-    def __init__(self, char: str, id):
+    def __init__(self, char: str, value):
         self.char = char
-        self.id = id
+        self.value = value
         self.children = []
         self.word_finished = False
-        self.counter = 1
 
 class Trie(object):
 
@@ -27,13 +26,13 @@ class Trie(object):
         """
         return TrieNode('*',None)
 
-    def __setitem__(self, word: str, id):
+    def __setitem__(self, word: str, value):
         """
             Método de Trie: adiciona uma palavra na TRIE.
 
-            Param: add(word, id)
+            Param: add(word, value)
                 word:str - palavra que será inserida
-                id:int - id da palavra
+                value:any - qualquer valor
         """
         word = self._standardize_string(word)
         node = self.root
@@ -44,18 +43,18 @@ class Trie(object):
                 if child.char == char:
                     # Encontramos o caractere, incrementamos o contador pois
                     # agora temos mais uma palavra que tem o mesmo prefixo
-                    child.counter += 1
                     # E vamos para o nodo filho onde econtramos o caractere de 'word'
                     node = child
                     found_in_child = True
                     break
             # Se não achamos o caractere de 'word' temos que adicioná-lo
             if not found_in_child:
-                new_node = TrieNode(char,id)
+                new_node = TrieNode(char,None)
                 node.children.append(new_node)
                 node = new_node
 
         # Quando terminarmos a palavra, marcamos o seu final
+        node.value = value
         node.word_finished = True
 
     def __getitem__(self, prefix: str):
@@ -68,31 +67,25 @@ class Trie(object):
         """
         prefix = self._standardize_string(prefix)
         node = self.root
-        # Se a raiz não tiver filhos, retorna falso
+
         if not self.root.children:
-            return [None]
+            return None
         for char in prefix:
             char_not_found = True
-            # Procura em todos os filhos do nodo atual
+
             for child in node.children:
                 if child.char == char:
-                    # Achamos o caractere que estávamos procurando
                     char_not_found = False
                     node = child
                     break
 
             if char_not_found:
-                return [None]
+                return None
 
-        # Se o prefixo corresponde a somente uma palavra, retornamos somente um id
-        # Senão, vamos procurar por todos os ids que estão relacioandos ao prefixo
         if node.word_finished:
-            return [int(node.id)]
-        else:
-            ids_found = []
-            return self._find_ids(node, ids_found)
+            return node.value
 
-    def _find_ids(self, node: TrieNode, ids_found):
+    def _find_ids(self, node: TrieNode, ids_found=[]):
         """
             Método de Trie: encontra todos os ids relacionados a um prefixo
 
@@ -103,7 +96,7 @@ class Trie(object):
         """
         for node in node.children:
             if node.word_finished:
-                ids_found.append(int(node.id))
+                ids_found.append(node.value)
             else:
                 self._find_ids(node, ids_found)
 
@@ -118,48 +111,18 @@ class Trie(object):
         """
         return str.lower().strip().replace(" ","")
 
-    def add_from_file(self, filename):
-        """
-            Método de Trie: adiciona à vários registros retirados de um arquivo
-
-            Param: add_from_file(filename):
-                filename:str - string que contém o nome do arquivo.
-                O arquivo deve ser um JSON no seguinte formato
-                [
-                    <objeto_1>,
-                    <objeto_2>,
-                    ...
-                    <objeto_n>
-                ]
-        """
-        arq = open(filename).readlines()
-        arq = arq[1:-1]
-
-        for i,entry in enumerate(arq):
-            # O último objeto do arquivo.json não tem vírgula no final da linha
-            if i != len(arq)-1:
-                entry = entry[0:-2]
-
-            obj = json.loads(entry)
-            # Formatando o nome para inserí-lo na TRIE
-            name = self._standardize_string(obj["name"])
-            id = int(obj["id"])
-            self[name] = id
-
-# TODO retornar lista com todas as palavras com prefixos correspondentes, não somente o primeiro resultado
-
 if __name__ == "__main__":
     trie = Trie()
-    trie.add_from_file('arquivo.json')
     trie['GTA'] =20
+    trie['Assassins'] =[12, "add"]
+    trie['GTA'] =32
+    trie['GTC'] ="23"
+    trie['G'] =3
 
-    # Procurando pelos prefixos
-    print(trie['gt'])
-    print(trie['God'])
-    print(trie['godofwar20'])
-    print(trie['resi'])
-    print(trie['Resi'])
-    print(trie['Gran Turismo'])
+    print(trie['GTA'])
+    print(trie['GT'])
+    print(trie['Assassins'])
+    print(trie['G'])
 
-    for n in range(80000):
-        trie[str(n)] = n
+    # for n in range(80000):
+    #     trie[str(n)] = n
