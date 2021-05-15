@@ -1,27 +1,51 @@
+from models.game import Game
 from models.entity import Entity
 
+
 if __name__ == "__main__":
-    Test = Entity()
+    Games = Game()
+    Tags = Entity()
+    Categories = Entity()
+    Enterprises = Entity()
 
-    test1 = {
-        "name":"test1",
-        "status":"aprovado",
-        "price":20.00
+    t = {
+        "name": "bla"
     }
 
-    test2 = {
-        "name":"test1",
-        "status":"reprovado",
-        "price":15.00
+    c = {
+        "name": "blabla"
     }
 
-    Test.create(test1)
-    Test.create(test2)
+    e = {
+        "name": "blablabla"
+    }
 
-    print(Test._items_list)
+    g = {
+        "name":"dorime ameno",
+        "price":16
+    }
 
-    Test.sort_by("price")
-    print(Test._items_list)
+    g = Games.create(g)
 
-    print(Test.paginate(1,1))
-    print(Test.paginate(2,1))
+    #laço for
+    t = Tags.create(t)
+
+    #laço for
+    c = Categories.create(c)
+
+    #laço for
+    e = Enterprises.create(e)
+
+
+    print(Games.get((g["id"])))
+    print(t)
+    print(c)
+    print(e)
+
+
+    # print(Games._items_list)
+    # print(Games._names_table)
+
+    # Games.sort_by("price")
+    # print(Games._items_list)
+

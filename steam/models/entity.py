@@ -10,7 +10,9 @@ class Entity:
         self._counter += 1
         item["id"] = str(self._counter)
         self._items_list.append(item)
+
         self._items_table[item["id"]] = item
+        return item
 
     def get(self, item_id):
         return self._items_table[item_id]
