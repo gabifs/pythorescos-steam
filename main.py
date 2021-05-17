@@ -37,20 +37,28 @@ if __name__ == "__main__":
     file = file_content.read()
     file = json.loads(file)
     file_content.close()
-    
+
+    file_content = open("archive/steam_data.json", "w")
+
     for game in file:
         game = Games.create(game)
 
-    # g = Games.create(g)
-    # h = Games.create(h)
+    g = Games.create(g)
+    h = Games.create(h)
+    file.append(g)
+    file.append(h)
+    json.dump(file, file_content)
+    file_content.close()
 
-    # #laço for
+    # # print(file)
+
+    # # # #laço for
     # t = Tags.create(t)
 
-    # #laço for
+    # # # #laço for
     # c = Categories.create(c)
 
-    # #laço for
+    # # # #laço for
     # e = Enterprises.create(e)
 
     # Abrindo o arquivo
@@ -61,12 +69,12 @@ if __name__ == "__main__":
     # print(c)
     # print(e)
 
-    # print(Games._items_list)
+    # print(str(Games._items_list)
     # print(Games._names_table)
 
     # Ordenando por nome
-    Games.sort_by("date")
-    games_sorted = Games.paginate(1,80893)
+    # Games.sort_by("name")
+    # games_sorted = Games.paginate(1,100)
     
-    for game in games_sorted:
-        print(game["name"], game["date"])
+    # for game in games_sorted:
+    #     print(game["name"])
