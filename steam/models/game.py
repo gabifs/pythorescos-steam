@@ -30,6 +30,3 @@ class Game(Entity):
         for game_id in id_set:
             games_list.append(self.get(game_id))
         return games_list
-
-
-

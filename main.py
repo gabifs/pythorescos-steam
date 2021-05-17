@@ -1,6 +1,6 @@
 from steam.models.game import Game
 from steam.models.entity import Entity
-
+import json
 
 if __name__ == "__main__":
     Games = Game()
@@ -21,31 +21,52 @@ if __name__ == "__main__":
     }
 
     g = {
-        "name":"dorime ameno",
+        "name":"dorime ameno simulator",
         "price":16
     }
 
-    g = Games.create(g)
+    h = {
+        "name":"War simulator",
+        "price":10
+    }
 
-    #laço for
-    t = Tags.create(t)
+    """
+    Teste com o arquivo
+    """
+    file_content = open("archive/steam_data.json")
+    file = file_content.read()
+    file = json.loads(file)
+    file_content.close()
+    
+    for game in file:
+        game = Games.create(game)
 
-    #laço for
-    c = Categories.create(c)
+    # g = Games.create(g)
+    # h = Games.create(h)
 
-    #laço for
-    e = Enterprises.create(e)
+    # #laço for
+    # t = Tags.create(t)
 
+    # #laço for
+    # c = Categories.create(c)
 
-    print(Games.get((g["id"])))
-    print(t)
-    print(c)
-    print(e)
+    # #laço for
+    # e = Enterprises.create(e)
 
+    # Abrindo o arquivo
+
+    # print(Games.get(g["id"]))
+    # print(Games.get(h["id"]))
+    # print(t)
+    # print(c)
+    # print(e)
 
     # print(Games._items_list)
     # print(Games._names_table)
 
-    # Games.sort_by("price")
-    # print(Games._items_list)
-
+    # Ordenando por nome
+    Games.sort_by("date")
+    games_sorted = Games.paginate(1,80893)
+    
+    for game in games_sorted:
+        print(game["name"], game["date"])
