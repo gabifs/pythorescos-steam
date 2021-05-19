@@ -43,4 +43,3 @@ class Entity:
         elif start != 0 and end > start:
             return self._items_list[(start-1):(end-1)]
         
-

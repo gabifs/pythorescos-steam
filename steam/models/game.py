@@ -54,10 +54,37 @@ class Game(Entity):
 
         return games_list
 
-    def save_new_games(self):
+    def save_games(self):
         """
         Os jogos que foram adicionados após o setup são salvos
         por essa função.
         """
         with open("archive/dump.json", "w") as write_to:
             json.dump(self._items_list, write_to)
+
+    def update_game(self, changes, key):
+        games = self.find_by_name(key)
+
+        # Os únicos atributos que podem ser modificados
+        valid_keys = [
+            "img_url",
+            "name",
+            "price",
+            "developer",
+            "full_desc",
+            "publisher",
+            "date",
+            "popu_tags",
+            "url_info",
+            "categories"
+        ]
+
+        # Podemos atualizar vários jogos de uma só vez ou somente um
+        for game in games:
+            for k,v in changes.items():
+                k = str(k)
+                v = str(v)
+                if k in valid_keys:
+                    game[k] = v
+
+        return games
