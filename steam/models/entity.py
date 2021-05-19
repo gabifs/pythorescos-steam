@@ -24,7 +24,6 @@ class Entity:
         item["popu_tags"] = str(item["popu_tags"]) if item.get("popu_tags") != None else "No tags"
         item["url_info"] = str(item["url_info"]) if item.get("url_info") != None else "No url infos"
         item["categories"] = str(item["categories"]) if item.get("categories") != None else "No categories"
-        
 
         self._items_list.append(item)
 
