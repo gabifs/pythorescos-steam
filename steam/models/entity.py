@@ -37,6 +37,10 @@ class Entity:
         by_key = lambda item : item[key]
         return self._items_list.sort(reverse=order, key=by_key)
 
-    def paginate(self, page=1, offset=25):
-        return self._items_list[(page-1)*offset:(page)*offset]
+    def paginate(self, start=0, end=0):
+        if start == 0 and end == 0:
+            return self._items_list
+        elif start != 0 and end > start:
+            return self._items_list[(start-1):(end-1)]
+        
 
