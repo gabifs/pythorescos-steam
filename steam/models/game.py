@@ -26,19 +26,32 @@ class Game(Entity):
         name (string): nome do jogo que será buscado
         order (boolean): False - ordem crescente, True - ordem descrescente
         """
-        splited_name = name.strip().split()
-        id_set = set()
-        for word in splited_name:
-            word = word.lower()
-            id_set = id_set.union(self._names_table[word])
+        splited_name = name.strip().split("+")
+        id_set_and = set()
+        id_set_or = set()
 
+        # Busca com filtro
+        # O sinal '+' indica OR e o ' ' (espaço em branco) indica AND
+        # Exemplo: boring paper+potato, retorna todos os jogos que tenham
+        # boring paper ou potato no nome
+        for word in splited_name:
+            inner_words = word.split()
+            id_set_and = self._names_table[inner_words[0]]
+
+            for inner_word in inner_words[1:]:
+                id_set_and = id_set_and.intersection(self._names_table[inner_word])
+
+            id_set_or = id_set_or.union(id_set_and)
+            id_set_and = set()
+    
         games_list=[]
-        for game_id in id_set:
+        for game_id in id_set_or:
             # Procurados pelos jogos através do ID que está na TRIE
             games_list.append(self.get(game_id))
 
         by_key = lambda item : item["name"]
         games_list.sort(reverse=order, key=by_key)
+
         return games_list
 
     def save_new_games(self):
