@@ -114,12 +114,6 @@ class Game(Entity):
 
         # O resto dos dados é mantido em memória, até que os dados sejam salvos
         for game in games:
-            # for word in game["name"].strip().split():
-            #     word = word.lower()
-
-                # Deletando a referência do ID no _names_table
-                # self._names_table[word].remove(game["id"])
-
             # Deletando a referência do ID da TRIE
             self._items_table.erase(game)
 
