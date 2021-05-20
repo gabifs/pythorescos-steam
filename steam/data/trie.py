@@ -84,6 +84,9 @@ class Trie(object):
 
         if node.word_finished:
             return node.value
+        # O word_finished será falso após uma deleção
+        # else:
+        #     return "No game found"
 
     def _find_ids(self, node: TrieNode, ids_found=[]):
         """
@@ -110,6 +113,38 @@ class Trie(object):
                 str:str - prefixo recebido
         """
         return str.lower().strip().replace(" ","")
+
+    def erase(self, item):
+        """
+        Caminha até a folha de um registro e marca como False o atributo
+        word_finished, que é utilizado para nos certificarmos de que acha-
+        mos a palavra que estávamos buscando.
+
+        item (Game): o jogo que será apagado da TRIE
+        """
+        game_id = item["id"]
+        node = self.root
+
+        if not self.root.children:
+            return None
+        for char in game_id:
+            char_not_found = True
+
+            for child in node.children:
+                if child.char == char:
+                    char_not_found = False
+                    node = child
+                    break
+
+            if char_not_found:
+                return None
+
+        if node.word_finished:
+            node.word_finished = False
+            
+        return 1   
+
+
 
 if __name__ == "__main__":
     trie = Trie()

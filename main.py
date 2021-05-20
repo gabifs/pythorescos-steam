@@ -4,6 +4,7 @@ from utils.startup import setup
 Games_model, Tags_model, Categories_model, Enterprises_model = setup()
 
 if __name__ == "__main__":
+  print()
 
   # game = {
   #   "name":"Boring paper",
@@ -15,10 +16,14 @@ if __name__ == "__main__":
 
   # Games_model.create(game)
 
+  Games_model.find_by_name("simulator")
+
   # changes = {"price":"499","publisher":"Sony"}
   # Games_model.update_game(changes, "boring paper")
 
-  Games_model.delete_game("simulator+potato")
+  # Games_model.delete_game("simulator")
+
+  # Games_model.save_games()
 
   # Games_model.find_by_name("simulator")
 
