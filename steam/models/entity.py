@@ -9,6 +9,7 @@ class Entity:
     def create(self, item):
         self._counter += 1
 
+        # Se o jogo não tiver ID, então criamos
         if item.get("id") == None:
             item["id"] = str(self._counter)
 

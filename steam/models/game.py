@@ -49,6 +49,7 @@ class Game(Entity):
             # Procurados pelos jogos através do ID que está na TRIE
             games_list.append(self.get(game_id))
 
+        # Ordenando o resultado da busca por nome
         by_key = lambda item : item["name"]
         games_list.sort(reverse=order, key=by_key)
 
@@ -59,7 +60,7 @@ class Game(Entity):
         Os jogos que foram adicionados após o setup são salvos
         por essa função.
         """
-        with open("archive/dump.json", "w") as write_to:
+        with open("archive/steam_data.json", "w") as write_to:
             json.dump(self._items_list, write_to)
 
     def update_game(self, changes, key):
@@ -88,3 +89,24 @@ class Game(Entity):
                     game[k] = v
 
         return games
+
+    def delete_game(self, key):
+        """
+        Podemos deletor vários jogos de uma vez ou um único jogo
+        """
+        games = self.find_by_name(key)
+
+        # O resto dos dados é mantido em memória, até que os dados sejam salvos
+        for game in games:
+            for word in game["name"].split():
+                word = str(word).lower()
+
+                # Deletando a referência do ID no _names_table
+                self._names_table[word].remove(game["id"])
+
+            # Deletando a referência do ID da TRIE
+            self._items_table[game["id"]] = None
+
+            # Deletando o elemento do array _items_list, que usamos para salvar
+            # os dados no arquivo
+            self._items_list.remove(game)
