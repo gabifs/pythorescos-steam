@@ -39,6 +39,7 @@ def dict_to_game(d):
     return g_raw
 
 def setup():
+    print("Inicializando as estruturas, por favor, aguarde.")
     Games_model = Game()
     Tags_model = Entity()
     Categories_model = Entity()
@@ -48,7 +49,7 @@ def setup():
     Inicializa estruturas
     """
 
-    with open("archive/steam_data.json") as file_content:
+    with open("archive/backup.json") as file_content:
         games_raw = json.loads(file_content.read())
         for dict_raw in games_raw:
             # game_raw = dict_to_game(dict_raw)
@@ -62,4 +63,5 @@ def setup():
     json.dump(Games_model._items_list, write_to)
     write_to.close()
 
+    print("Estruturas inicializadas.")
     return (Games_model, Tags_model, Categories_model, Enterprises_model)
