@@ -21,15 +21,15 @@ class Game(Entity):
                 self._names_table[word].add(item["id"])
         return item
 
-    def update_game(self, changes, key):
+    def update_game(self, changes, game_name):
         """
         Atualiza os dados de um jogo.
 
         changes (dicionário): dicionário com as mudanças que devem ser aplicadas
-        key (string): nome do jogo que deve ter seus dados alterados
+        game_name (string): nome do jogo que deve ter seus dados alterados
         """
         print("Atualizando jogos, por favor, aguarde.")
-        games = self.find_by_name(key, called_by_user=False)
+        games = self.find_by_name(game_name, called_by_user=False)
 
         # Os únicos atributos que podem ser modificados
         valid_keys = [
@@ -123,7 +123,7 @@ class Game(Entity):
 
         print("Jogos deletados.")
 
-    def find_by_name(self, name, order=False, called_by_user=True):
+    def find_by_name(self, name, order=False, called_by_user=True, show_all_info=False):
         """
         name (string): nome do jogo que será buscado
         order (boolean): False (default) - ordem crescente, True - ordem descrescente
@@ -131,6 +131,8 @@ class Game(Entity):
             pelo usuário, então exiba os nomes dos jogos buscados, 
             False - find_by_name foi chamada por delete_game ou update_game, 
             então não exiba os nomes dos jogos buscados
+        show_all_info (boolean): False (default) - somente o   nome do jogo será mostrado
+            True - todos os dados sobre o jogo serão mostrados
         """
         if called_by_user:
             print("Buscando jogos, por favor aguarde.")
@@ -180,8 +182,12 @@ class Game(Entity):
         # Se a função delete_game ou update_game chamou a função find_by_name, 
         # não queremos exibir o nome dos jogos buscados
         if called_by_user:
-            for game in games_list:
-                print(game["name"])
+            if show_all_info:
+                for game in games_list:
+                    print(game)
+            else:
+                for game in games_list:
+                    print(game["name"])
 
         return games_list
 
@@ -194,6 +200,8 @@ class Game(Entity):
         os dados não forem salvos, todas as modificações serão perdidas.
         """
         print("Salvando os dados, por favor, aguarde.")
+        # Descomente a próxima linha para restaurar steam_data ao seu estado original
+        # with open("archive/backup.json", "w") as write_to:
         with open("archive/steam_data.json", "w") as write_to:
             json.dump(self._items_list, write_to)
         print("Dados salvos.")

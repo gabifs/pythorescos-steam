@@ -49,7 +49,7 @@ def setup():
     Inicializa estruturas
     """
 
-    with open("archive/backup.json") as file_content:
+    with open("archive/steam_data.json") as file_content:
         games_raw = json.loads(file_content.read())
         for dict_raw in games_raw:
             # game_raw = dict_to_game(dict_raw)
