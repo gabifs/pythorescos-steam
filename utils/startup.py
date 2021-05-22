@@ -17,29 +17,29 @@ def date_parser(date:str):
     return datetime.datetime(year, month, day)
 
 def dict_to_game(d):
-    g_raw = {
-                    "name": d["name"]
-            }
-    if "full_desc" in d:
-        g_raw["description"] = d["full_desc"]["desc"]
-    else:
-        g_raw["description"] = "Sem descrição"
+    # g_raw = {
+    #                 "name": d["name"]
+    #         }
+    g_raw = d
+    # if "full_desc" in d:
+    #     g_raw["description"] = d["full_desc"]["desc"]
+    # else:
+    #     g_raw["description"] = "No description"
 
-    if "price" in d and re.search("^\d+", d["price"]):
-        g_raw["price"] = float(d["price"])
-    else:
-        g_raw["price"] = "free"
+    # if "price" in d and re.search("^\d+", d["price"]):
+    #     g_raw["price"] = float(d["price"])
+    # else:
+    #     g_raw["price"] = "free"
 
-    if "data" in d:
-        g_raw["date"] = date_parser(d["date"])
-    else:
-        g_raw["date"] = datetime.datetime.now()
-
+    # if "data" in d:
+    #     g_raw["date"] = date_parser(d["date"])
+    # else:
+    #     g_raw["date"] = datetime.datetime.now()
+    
     return g_raw
 
-
-
 def setup():
+    print("Inicializando as estruturas, por favor, aguarde.")
     Games_model = Game()
     Tags_model = Entity()
     Categories_model = Entity()
@@ -52,8 +52,16 @@ def setup():
     with open("archive/steam_data.json") as file_content:
         games_raw = json.loads(file_content.read())
         for dict_raw in games_raw:
-            game_raw = dict_to_game(dict_raw)
+            # game_raw = dict_to_game(dict_raw)
 
-        game = Games_model.create(game_raw)
+            Games_model.create(dict_raw)
+    
+    # Depois que os jogos são criados e já foram modificados
+    # vamos usar o array _items_list, que irá sobrescrever 
+    # os jogos originais
+    write_to = open("archive/steam_data.json", "w")
+    json.dump(Games_model._items_list, write_to)
+    write_to.close()
 
+    print("Estruturas inicializadas.")
     return (Games_model, Tags_model, Categories_model, Enterprises_model)
